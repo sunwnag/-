@@ -1,0 +1,65 @@
+--select * from customers where state = 'NJ';
+--select * from orders where shipdate>to_date('2003-4-1','yyyy-mm-dd');
+--select * from books where category not in 'FITNESS';
+--select * from customers where state in('NJ','GA') order by firstname;
+--select * from orders where to_char(orderdate,'yyyy-mm-dd')<'2003-04-02';
+--select * from author where fname like '%IN%' order by fname,lname;
+--select * from customers where referred is not null;
+--select * from books where category in ('CHILDREN','COOKING');
+--select * from books where title like '_A_N%';
+--select title from books where to_char(pubdate,'yyyy')='2001' and category ='COMPUTER';
+--------------------------------------------------------------
+--1.创建一个列表，显示每本书的书名以及出版社办公室中你再次订购每本书时需要与之联系的人的姓名和电话号码。
+--select b.title,p.name,p.phone from books b
+--inner join publisher p on p.pubid=b.pubid
+--2.顾客号为1001的客户的信息(人名，住址)和订单信息(订单号，发货日期，发货城市)
+--select c.lastname||'.'||c.firstname name,c.address ,o.order#,o.shipdate,o.shipcity ,c.customer# from customers c
+--inner join orders o on o.customer#=c.customer#
+--where c.customer#='1001'
+--3.确定哪些订单还没有发货(假设今天是2003-1-1)以及下达各个订单的客户的姓名。将结果按下达订单的日期排序。
+--select o.*,c.lastname||'.'||c.firstname name from orders o
+--inner join customers c on c.customer#=o.customer#
+--where o.shipdate is null order by o.orderdate
+--4.列出已经购买了Fitness种类的图书的所有人的客户号和姓名。
+--select c.customer#,c.lastname||'.'||c.firstname name ,b.category from customers c
+--inner join orders o on o.customer#=c.customer#
+--inner join orderitems oi on oi.order#=o.order#
+--inner join books b on b.isbn=oi.isbn
+--where b.category='FITNESS'
+--5.确定Jake Lucas已经购买了哪些书。
+--select c.lastname||'.'||c.firstname name,b.* from customers c
+--inner join orders o on o.customer#=c.customer#
+--inner join orderitems oi on oi.order#=o.order#
+--inner join books b on b.isbn=oi.isbn
+--where c.firstname='JAKE' and c.lastname='LUCAS'
+--6.确定销售给Jake Lucas的每一本书的利润。将结果按订单日期排序。如果订购了多本书，那么将结果按利润的降序排列。
+--select c.lastname||'.'||c.firstname name,o.orderdate,b.retail-b.cost profit from customers c
+--inner join orders o on o.customer#=c.customer#
+--inner join orderitems oi on oi.order#=o.order#
+--inner join books b on b.isbn=oi.isbn
+--where c.firstname='JAKE' and c.lastname='LUCAS'
+--order by o.orderdate,profit desc
+--7.那一本书是由姓氏为Adams的作者编写的？
+--select b.* from books b
+--inner join bookauthor ba on ba.isbn=b.isbn
+--inner join author a on a.authorid=ba.authorid
+--where a.lname='ADAMS'
+--8.确定Becca Nelson定购的图书的作者。
+--SELECT distinct a.fname||' '||a.lname authorname,b.title FROM customers c
+--inner join orders o on o.customer#=c.customer#
+--inner join orderitems oi on oi.order#=o.order#
+--inner join books b on b.isbn = oi.isbn
+--inner join bookauthor ba on ba.isbn=b.isbn
+-- join author a on a.authorid=ba.authorid
+--where c.firstname='BECCA' and c.lastname='NELSON'
+--9.显示BOOKS表中所有图书的列表。如果某位客户已经订购了一本书，那么还要列出对应的订单号以及客户所在的州。
+--select * from books b
+--left join orderitems oi on oi.isbn=b.isbn
+--left join orders o on o.order#=oi.order#
+--left join customers c on c.customer#=o.customer#
+--10.生成居住在佛罗里达州并且订购了计算机图书的所有客户的列表。
+--select c.* from customers c
+--inner join orders o on o.customer#=c.customer#
+--inner join orderitems oi on oi.order#=o.order#
+--inner join books b on b.isbn=oi.isbn
+--where  b.category='COMPUTER' and c.state='FL'
